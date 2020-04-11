@@ -4,7 +4,7 @@
 # Lisence: MIT
 # Author: CC
 #===================================================
-name: Build OpenWrt for K2
+name: Build OpenWrt for R3G
 
 on:
   push:

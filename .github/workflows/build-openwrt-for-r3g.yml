@@ -9,7 +9,7 @@ name: Build OpenWrt for R3G
 on:
   push:
     branches:
-      - master
+      - dev
     paths:
       - '.config'
   watch:

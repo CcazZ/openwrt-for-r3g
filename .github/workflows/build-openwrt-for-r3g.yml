@@ -110,46 +110,49 @@ jobs:
 
     - name: Upload kernel1.bin
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-kernel1.bin
         path: openwrt/bin/targets/ramips/mt7621/
 
     - name: Upload rootfs0.bin
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-rootfs0.bin
         path: openwrt/bin/targets/ramips/mt7621/
 
     - name: Upload sysupgrade.bin
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-sysupgrade.bin
         path: openwrt/bin/targets/ramips/mt7621/
 
     - name: Upload sha256sums
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: sha256sums
         path: openwrt/bin/targets/ramips/mt7621/
 
     - name: Upload config.seed
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: config.seed
         path: openwrt/bin/targets/ramips/mt7621/
 
     - name: zip files
       id: zip
+      if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
         zip -r -o openwrt_firmware_$(date +%Y-%m-%d_%H%M%S).zip openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-kernel1.bin openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-rootfs0.bin openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-sysupgrade.bin sha256sums config.seed
+        echo "::set-output name=status::success"
 
     - name: Upload openwrt.zip to cowtransfer
+      if: steps.zip.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
         curl -sL https://git.io/cowtransfer | sh

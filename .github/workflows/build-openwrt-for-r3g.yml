@@ -12,6 +12,7 @@ on:
       - dev
     paths:
       - '.config'
+      - '.github/workflows/build-openwrt-for-r3g.yml'
   watch:
     types: started
 

@@ -109,12 +109,27 @@ jobs:
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
 
+    - name: Arrange files
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/ramips/mt7621/
+        rm -rf packages
+        #rm -f openwrt-ramips-mt7621-xiaomi_mir3g.manifest
+        #rm -f openwrt-ramips-mt7621-xiaomi_mir3g-initramfs-kernel.bin
+
+    - name: Upload firmware to artifact
+      uses: actions/upload-artifact@master
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      with:
+        name: mir3g fireware
+        path: openwrt/bin/targets/ramips/mt7621/
+
     - name: zip files
       id: zip
       if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
-        zip -r -o openwrt_firmware_$(date +%Y-%m-%d_%H%M%S).zip openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-kernel1.bin openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-rootfs0.bin openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-sysupgrade.bin sha256sums config.seed
+        zip -r -o openwrt_firmware_$(date +%Y-%m-%d_%H%M%S).zip ./*
         echo "::set-output name=status::success"
 
     - name: Upload openwrt.zip to cowtransfer
@@ -123,19 +138,3 @@ jobs:
         cd openwrt/bin/targets/ramips/mt7621/
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -p 8 *.zip
-
-    - name: Arrange files
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      run: |
-        cd openwrt/bin/targets/ramips/mt7621/
-        rm -rf packages
-        rm -f openwrt-ramips-mt7621-xiaomi_mir3g.manifest
-        rm -f openwrt-ramips-mt7621-xiaomi_mir3g-initramfs-kernel.bin
-        rm *.zip
-
-    - name: Upload firmware to artifact
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled() && failure()
-      with:
-        name: mir3g fireware
-        path: openwrt/bin/targets/ramips/mt7621/

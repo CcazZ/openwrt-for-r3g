@@ -109,41 +109,6 @@ jobs:
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
 
-    - name: Upload kernel1.bin
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-kernel1.bin
-        path: openwrt/bin/targets/ramips/mt7621/
-
-    - name: Upload rootfs0.bin
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-rootfs0.bin
-        path: openwrt/bin/targets/ramips/mt7621/
-
-    - name: Upload sysupgrade.bin
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        name: openwrt-ramips-mt7621-xiaomi_mir3g-squashfs-sysupgrade.bin
-        path: openwrt/bin/targets/ramips/mt7621/
-
-    - name: Upload sha256sums
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        name: sha256sums
-        path: openwrt/bin/targets/ramips/mt7621/
-
-    - name: Upload config.seed
-      uses: actions/upload-artifact@master
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        name: config.seed
-        path: openwrt/bin/targets/ramips/mt7621/
-
     - name: zip files
       id: zip
       if: steps.compile.outputs.status == 'success' && !cancelled()
@@ -158,3 +123,19 @@ jobs:
         cd openwrt/bin/targets/ramips/mt7621/
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -p 8 *.zip
+
+    - name: Arrange files
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/ramips/mt7621/
+        rm -rf packages
+        rm -f openwrt-ramips-mt7621-xiaomi_mir3g.manifest
+        rm -f openwrt-ramips-mt7621-xiaomi_mir3g-initramfs-kernel.bin
+        rm *.zip
+
+    - name: Upload firmware to artifact
+      uses: actions/upload-artifact@master
+      if: steps.compile.outputs.status == 'success' && !cancelled() && failure()
+      with:
+        name: mir3g fireware
+        path: openwrt/bin/targets/ramips/mt7621/

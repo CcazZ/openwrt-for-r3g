@@ -87,6 +87,7 @@ jobs:
         git clone https://github.com/fangli/openwrt-vm-tools
         cd lean/
         git clone https://github.com/rufengsuixing/luci-app-adguardhome
+        git clone https://github.com/kuoruan/luci-app-v2ray
 
     - name: SSH connection
       uses: mxschmitt/action-tmate@v2
@@ -140,3 +141,9 @@ jobs:
         cd openwrt/bin/targets/ramips/mt7621/
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -p 8 *.zip
+
+    - name: Upload openwrt.zip to cowtransfer
+      if: steps.zip.outputs.status == 'success' && !cancelled()
+      run: |
+        chmod -x cowtransfer-uploader
+        ./cowtransfer-uploader -p 8 openwrt/bin/targets/ramips/mt7621/*.zip

@@ -136,14 +136,16 @@ jobs:
         echo "::set-output name=status::success"
 
     - name: Upload openwrt.zip to cowtransfer
+      id: upload
       if: steps.zip.outputs.status == 'success' && !cancelled()
+      run: |
+        chmod +x cowtransfer-uploader
+        ./cowtransfer-uploader -p 8 openwrt/bin/targets/ramips/mt7621/*.zip
+        echo "::set-output name=status::success"
+
+    - name: Upload openwrt.zip to cowtransfer again
+      if: steps.upload.outputs.status != 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -p 8 *.zip
-
-    - name: Upload openwrt.zip to cowtransfer
-      if: steps.zip.outputs.status == 'success' && !cancelled()
-      run: |
-        chmod -x cowtransfer-uploader
-        ./cowtransfer-uploader -p 8 openwrt/bin/targets/ramips/mt7621/*.zip

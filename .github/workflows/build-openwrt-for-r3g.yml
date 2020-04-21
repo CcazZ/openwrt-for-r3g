@@ -9,7 +9,7 @@ name: Build OpenWrt for R3G
 on:
   push:
     branches:
-      - dev
+      - dev-openwrt
     paths:
       - '.config'
       - '.github/workflows/build-openwrt-for-r3g.yml'
@@ -18,14 +18,14 @@ on:
 
 env:
 #  REPO_URL: https://github.com/coolsnowwolf/lede
-#  REPO_URL: https://github.com/openwrt/openwrt
-  REPO_URL: https://github.com/Lienol/openwrt
-#  REPO_BRANCH: master
-  REPO_BRANCH: dev-19.07
+  REPO_URL: https://github.com/openwrt/openwrt
+#  REPO_URL: https://github.com/Lienol/openwrt
+  REPO_BRANCH: master
+#  REPO_BRANCH: dev-19.07
   SSH_ACTIONS: false
   CUSTOM_FEEDS: false
-  CUSTOM_SETTING: true
-  CUSTOM_LUCI: true
+  CUSTOM_SETTING: false
+  CUSTOM_LUCI: false
   
 jobs:
   build:

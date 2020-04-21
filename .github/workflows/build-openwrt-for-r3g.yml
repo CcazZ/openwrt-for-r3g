@@ -9,7 +9,7 @@ name: Build OpenWrt for R3G
 on:
   push:
     branches:
-      - dev-openwrt
+      - dev-lede
     paths:
       - '.config'
       - '.github/workflows/build-openwrt-for-r3g.yml'
@@ -17,15 +17,12 @@ on:
     types: started
 
 env:
-#  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_URL: https://github.com/openwrt/openwrt
-#  REPO_URL: https://github.com/Lienol/openwrt
+  REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-#  REPO_BRANCH: dev-19.07
   SSH_ACTIONS: false
   CUSTOM_FEEDS: false
-  CUSTOM_SETTING: false
-  CUSTOM_LUCI: false
+  CUSTOM_SETTING: true
+  CUSTOM_LUCI: true
   
 jobs:
   build:
@@ -84,7 +81,7 @@ jobs:
       if: env.CUSTOM_LUCI == 'true'
       run: |
         cd openwrt/package
-        #git clone https://github.com/destan19/OpenAppFilter
+        git clone https://github.com/destan19/OpenAppFilter
         git clone https://github.com/fangli/openwrt-vm-tools
         cd lean/
         git clone https://github.com/rufengsuixing/luci-app-adguardhome

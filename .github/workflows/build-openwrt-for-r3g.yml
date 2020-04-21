@@ -116,8 +116,8 @@ jobs:
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
         rm -rf packages
-        #rm -f openwrt-ramips-mt7621-xiaomi_mir3g.manifest
-        #rm -f openwrt-ramips-mt7621-xiaomi_mir3g-initramfs-kernel.bin
+        rm -f openwrt-ramips-mt7621-xiaomi_mir3g.manifest
+        rm -f openwrt-ramips-mt7621-xiaomi_mir3g-initramfs-kernel.bin
         echo "::set-output name=status::success"
 
     - name: Upload firmware to artifact
@@ -132,7 +132,7 @@ jobs:
       if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         cd openwrt/bin/targets/ramips/mt7621/
-        zip -r -o openwrt_firmware_$(date +%Y-%m-%d_%H%M%S).zip ./*
+        zip -r -o openwrt_firmware_$(date +%Y-%m-%d).zip ./*
         echo "::set-output name=status::success"
 
     - name: Upload openwrt.zip to cowtransfer
